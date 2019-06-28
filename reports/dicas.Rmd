@@ -180,3 +180,17 @@ tidy(model)
 glance(model)
 ```
 
+```{r}
+atividade = read_projectdata()
+atividade = atividade %>% 
+  filter(!is.na(twitter), !is.na(seguidores), engaj_mediano > 0, !is.na(n_retweet), !is.na(segue), !is.na(n_proprio), segue > 0, n_proprio>0, seguidores > 0, n_retweet > 0)
+atividade = atividade %>% mutate(engaj_log=log10(engaj_mediano)) %>% mutate(seguidores_log=log10(seguidores)) %>% 
+  mutate(retweet_log = log10(n_retweet)) %>% mutate(proprio_log=log10(n_proprio)) %>% mutate(segue_log=log10(segue))
+atividade
+model = lm(engaj_log ~ seguidores_log + retweet_log + proprio_log + segue_log + casa, data=atividade)
+tidy(model)
+glance(model)
+```
+
+## Conclusão
+O rsquared da primeira regressão (não transformada) sugere que 71% do engaj total é explicado pelas variáveis analisadas, enquanto que para o segundo caso 57% do engaj mediano é explicado pelas mesmas. Valores consideráveis.
